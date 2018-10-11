@@ -2,14 +2,25 @@
 # -*- coding: utf-8 -*-
 
 class Node:
-    def __init__(self, parent, k):
+    """A node for the tree"""
+    def __init__(self, parent, key):
+        """init a node
+
+        Args:
+            parent: node's parent
+            key: node's key
+        """
         self.parent = parent
-        self.key = k
+        self.key = key
         self.left = None
         self.right = None
 
+
+class BSTNode(Node):
+    """A node for BST tree"""
+
     def _str(self):
-        """Internal method for ASCII art."""
+        """Internal method for ASCII art dispaly."""
         label = str(self.key)
         if self.left is None:
             left_lines, left_pos, left_width = [], 0, 0
@@ -43,6 +54,15 @@ class Node:
         return '\n'.join(self._str()[0])
 
     def find(self, k):
+        """return the node with key k from the subtree from this
+        node as the root.
+
+        Args:
+            k: the key of node to be searched
+
+        Returns:
+            the node with key k
+        """
         if k is None:
             return None
 
@@ -58,12 +78,24 @@ class Node:
             return None
 
     def find_min(self):
+        """Find the node with smallest key in the subtree from this
+        node as the root
+
+        Returns:
+            the node with minimum key
+        """
         current = self
         while current.left:
             current = current.left
         return current
 
     def find_successor(self):
+        """Find the node with next larger key
+
+        Returns:
+            the node with the next larger key in the subtree from this
+            node as the root
+        """
         if self.right:
             return self.right.find_min()
         current = self
@@ -72,6 +104,12 @@ class Node:
         return current.parent
 
     def insert(self, node):
+        """Insert the node into the subtree rooted at this node
+
+        Args:
+            node: the node to be inserted
+
+        """
         if node is None:
             return None
 
@@ -88,9 +126,8 @@ class Node:
                 node.parent = self
                 self.right = node
 
-        return node
-
     def delete(self):
+        """Delete and return this node"""
         if self.left is None or self.right is None:
             if self is self.parent.left:
                 self.parent.left = self.left or self.right
@@ -109,6 +146,8 @@ class Node:
         return deleted
 
 class BST:
+    """A binary search tree"""
+
     def __init__(self):
         self.root = None
 
@@ -119,17 +158,36 @@ class BST:
             return str(self.root)
 
     def find(self, k):
+        """Find the node with key k in the subtree has the root as this node
+
+        Args:
+            k: key of node to be searched
+        """
         return self.root and self.root.find(k)
 
     def find_min(self):
+        """Find the node with minimum key in the tree"""
         return self.root and self.root.find_min()
 
     def find_successor(self, k):
+        """Find the node with the next larger key in the BST tree
+
+        Args:
+            k: the key of the node of which successor to be found
+
+        Returns:
+            the node with next larger key
+        """
         node = self.find(k)
         return node and node.find_successor()
 
     def insert(self, k):
-        node = Node(None, k)
+        """Insert a node with key k into the subtree has the root as this node
+
+        Args:
+            k: the key of the node to be inserted
+        """
+        node = BSTNode(None, k)
         if self.root is None:
             self.root = node
         else:
@@ -137,9 +195,17 @@ class BST:
         return node
 
     def delete(self, k):
+        """Delete and return the node with the key k if it exists
+
+        Args:
+            k: the key of the node to be deleted
+
+        Returns:
+            the deleted node with the key k
+        """
         node = self.find(k)
         if node is self.root:
-            new_node = Node(None, 0)
+            new_node = BSTNode(None, 0)
             new_node.left = self.root
             self.root.parent = new_node
             deleted = self.root.delete()
