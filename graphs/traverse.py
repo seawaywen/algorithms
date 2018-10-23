@@ -71,7 +71,7 @@ def dfs_visit(start, parent):
             parent[v] = start
             dfs_visit(v, parent)
 
-def traversal(end_key, parent):
+def traversal(g, end_key, parent):
     end = g.get_vertex(end_key)
 
     path = []
@@ -150,16 +150,16 @@ if __name__ == '__main__':
     print('-' * 40)
     g = init_graph()
     parent = dfs(g, 'd')
-    print(traversal('e', parent))
+    print(traversal(g, 'e', parent))
 
     g = init_graph()
     print('*** BFS')
     parent = bfs(g, 'd')
-    print(traversal('e', parent))
+    print(traversal(g, 'e', parent))
 
     print('*** BFS with queue')
     parent = bfs_with_queue(g, 'd')
-    print(traversal('e', parent))
+    print(traversal(g, 'e', parent))
 
     print('*' * 40)
     print('*** Topological sort')
