@@ -85,6 +85,57 @@ def traversal(end_key, parent):
        shortest_path.append(path.pop().key)
     return '->'.join(shortest_path)
 
+def topological_sort(g):
+    stack = []
+    parent = {}
+
+    for i in g:
+        print(f'{i}-in:{i.in_degree} out:{i.out_degree}')
+        if i.in_degree == 0:
+            topological_visit(i, stack, parent)
+
+    print('->'.join([str(s.key) for s in stack]))
+
+def topological_visit(u, stack, parent):
+    for v in u.get_connections():
+        if v not in parent:
+            parent[v] = u
+            topological_visit(v, stack, parent)
+
+    stack.insert(0, u)
+
+def all_topological_sort(g):
+    """Get all the topological sortings in a DAG(Directed Acylic Graph)
+    """
+    visited = []
+    in_degree = {}
+    for i in g:
+        in_degree[i] = i.in_degree
+        for v in i.get_connections():
+            in_degree[v] = v.in_degree
+
+    all_topological_visit(g, in_degree, visited)
+
+def all_topological_visit(g, in_degree, visited):
+    flag = False
+    for i in g:
+        # choose those vertex has 0 degree and not visted yet
+        if i not in visited and in_degree[i] == 0:
+            visited.append(i)
+
+            for v in i.get_connections():
+                in_degree[v] -= 1
+
+            all_topological_visit(g, in_degree, visited)
+
+            # resetting here for backtracking
+            visited.remove(i)
+            for v in i.get_connections():
+                in_degree[v] += 1
+            flag = True
+
+    if not flag:
+        print('->'.join([str(s.key) for s in visited]))
 
 def init_graph():
     g = UnDirectGraph()
@@ -109,3 +160,18 @@ if __name__ == '__main__':
     print('*** BFS with queue')
     parent = bfs_with_queue(g, 'd')
     print(traversal('e', parent))
+
+    print('*' * 40)
+    print('*** Topological sort')
+    g = Graph()
+    g.add_edge(5, 2)
+    g.add_edge(5, 0)
+    g.add_edge(4, 0)
+    g.add_edge(4, 1)
+    g.add_edge(2, 3)
+    g.add_edge(3, 1)
+    topological_sort(g)
+    print('-' * 20)
+    print('*** All topological sorts')
+    all_topological_sort(g)
+
